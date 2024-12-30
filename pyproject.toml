@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "rtl"
+version = "0.1.0"
+description = "a collection of rtl projects and modules"
+authors = ["drewnotdrew"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+cocotb = "^1.9.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
