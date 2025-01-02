@@ -8,6 +8,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.13"
 cocotb = "^1.9.2"
+cocotb-test = "^0.2.5"
 
 
 [build-system]
