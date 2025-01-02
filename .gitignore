@@ -1,1 +1,7 @@
+# python venv
 rtl_venv/
+
+# vscode
+.vscode/
+
+sim_build/
