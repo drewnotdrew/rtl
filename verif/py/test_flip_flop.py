@@ -15,7 +15,8 @@ async def flip_flop_reset(dut):
     Test flip flop reset.
     """
     # Arrange
-    clock = Clock(signtal=dut.clk, period=int(dut.CLK_PERIOD_NS), units="ns")
+    clock = Clock(dut.clk, 5, units="ns")
+    # clock = Clock(signal=dut.clk, period=int(dut.CLK_PERIOD_NS), units="ns")
     await cocotb.start(clock.start())
 
     # Act
