@@ -32,12 +32,11 @@ def resolve_module_path(name: str) -> Path:
     # Process input name
     if not name.endswith(".sv"):
         name += ".sv"
-    file_name = Path(name)
 
     project_root = get_project_root()
 
     # Search for a module in project root
-    hits = list(project_root.rglob(file_name))
+    hits = list(project_root.rglob(name))
     if len(hits) == 1:
         return hits[0]
     if len(hits) == 0:
