@@ -13,6 +13,9 @@ module flip_flop (
     q
 );
 
+  parameter CLK_HZ = 12_000_000;
+  parameter CLK_PERIOD_NS = (1_000_000_000 / CLK_HZ);
+
   input wire clk, rst, set, d;
   output logic q;
 

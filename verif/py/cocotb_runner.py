@@ -42,6 +42,7 @@ def run_cocotb(top: str, deps: List[str], parameters: Dict[str, str] = None):
         ],
         simulator="icarus",
         parameters=parameters,
+        waves=True,
         sim_build=(
             get_project_root().joinpath(
                 f"sim_build/{top}/"
