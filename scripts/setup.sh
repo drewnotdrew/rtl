@@ -3,7 +3,7 @@ cd "$(dirname "${BASH_SOURCE[0]}")" || exit
 
 source rtl_venv/bin/activate
 export PYTHONPYCACHEPREFIX=/tmp/pycache
-
+export PYTHONPATH="$(pwd)"
 poetry shell
 
 # # Enable open source tools.

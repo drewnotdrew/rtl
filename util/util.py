@@ -43,3 +43,13 @@ def resolve_module_path(name: str) -> Path:
         raise FileNotFoundError(f"Unable to find module {name}")
     if len(hits) > 1:
         raise RuntimeError(f"Multiple modules found for {name}: {hits}")
+
+
+def resolve_relative_module_path(name: str) -> Path:
+    """
+    Resolve the relative path to a module, from the project root. In the event
+    more than one module is found, and error is raised.
+    """
+    project_root_path = get_project_root()
+    abs_module_path = resolve_module_path(name=name)
+    return abs_module_path.relative_to(project_root_path)
