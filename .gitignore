@@ -4,4 +4,11 @@ rtl_venv/
 # vscode
 .vscode/
 
+# sim output
 sim_build/
+
+# vivado output
+*.log
+*.checkpoint
+*.jou
+.Xil/
