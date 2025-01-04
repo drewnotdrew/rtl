@@ -1,6 +1,7 @@
 # Available bitstreams; used for .PHONY
-BITSTREAMS = flip_flop.bit
-PROGRAM_TARGETS = $(BITSTREAMS:%.bit=%.program)
+BITSTREAMS=flip_flop.bit
+PROGRAM_TARGETS=$(BITSTREAMS:%.bit=%.program)
+TARGET_DIRECTORY=NULL
 
 # Avoid conflicts with files of the same name
 .PHONY: test_all, clean $(PROGRAM_TARGETS)
@@ -13,10 +14,9 @@ test_all:
 clean:
 	rm -rf sim_build
 
-# Determine the target module directory
+# Determine the target module directory and create a sym link for use in %.bit
 %_target_directory: scripts/determine_target_directory.py
-	@touch /tmp/hdl_target_directory 
-	@echo $$(python3 scripts/determine_target_directory.py --name=$*) > /tmp/hdl_target_directory
+	@ln -sf $$(python3 scripts/determine_target_directory.py --name=$*) /tmp/.hdl_target_directory
 
 # Applies to the rest of the file, used to expand generate/program bitstream to
 # any target
