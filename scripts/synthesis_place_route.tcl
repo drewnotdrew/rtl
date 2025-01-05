@@ -30,25 +30,25 @@ read_xdc $::env(XDC_FILE)
 
 # Synthesize and optimize
 synth_design -top $::env(SYNTH_TOP_MODULE) -part $::env(FPGA_PART_NO)
-report_drc -file drc.log -verbose
-write_checkpoint -force synthesis.checkpoint
+report_drc -file logs/drc.log -verbose
+write_checkpoint -force checkpoints/synthesis.checkpoint
 opt_design
 # power_opt_design # Not needed for now
 
 # Reports
-report_timing_summary -file timing_summary.log
-report_timing -sort_by group -max_paths 100 -path_type summary -file timing.log -verbose
-report_utilization -file utilization.log -verbose
-report_utilization -hierarchical -file utilization_by_module.log -verbose
+report_timing_summary -file logs/timing_summary.log
+report_timing -sort_by group -max_paths 100 -path_type summary -file logs/timing.log -verbose
+report_utilization -file logs/utilization.log -verbose
+report_utilization -hierarchical -file logs/utilization_by_module.log -verbose
 
 # Place and route
 place_design
 # phys_opt_design # Not needed for now
-write_checkpoint -force place.checkpoint
+write_checkpoint -force checkpoints/place.checkpoint
 route_design
-write_checkpoint -force route.checkpoint
+write_checkpoint -force checkpoints/route.checkpoint
 
-report_clocks -file clocks.log
+report_clocks -file logs/clocks.log
 
 # Write bitstream
-write_bitstream -force ./$::env(SYNTH_TOP_MODULE).bit
+write_bitstream -force ./bit/$::env(SYNTH_TOP_MODULE)_$::env(FPGA_PART_NO).bit

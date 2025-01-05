@@ -7,9 +7,14 @@ PROGRAM_TARGETS=$(BITSTREAMS:%.bit=%.program)
 TARGET_DIRECTORY=NULL
 
 CMOD_A7_PART_NO=xc7a35tcpg236-1
+ZYBO_PART_NO=xc7z010clg400-1
+
+#TODO: Make settable through the cli 
+FPGA_PART_NO=${CMOD_A7_PART_NO}
+# FPGA_PART_NO=${ZYBO_PART_NO}
 
 # Avoid conflicts with files of the same name
-.PHONY: test_all clean #$(PROGRAM_TARGETS)
+.PHONY: test_all clean *.program #$(PROGRAM_TARGETS)
 
 # Test all modules with cocotb
 test_all:
@@ -44,7 +49,8 @@ include hdl/components.mk
 	@echo "SRCS: ${$*_SRCS}"
 	@echo "DEPS: ${$*_DEPS}"
 	@echo "################################################"
-	SYNTH_HDL_SRCS="${$*_SRCS}" FPGA_PART_NO=${CMOD_A7_PART_NO} XDC_FILE="${$*_XDC}" SYNTH_TOP_MODULE="$*" ${VIVADO} scripts/synthesis_place_route.tcl
+	SYNTH_HDL_SRCS="${$*_SRCS}" FPGA_PART_NO=${FPGA_PART_NO} XDC_FILE="${$*_XDC}" SYNTH_TOP_MODULE="$*" ${VIVADO} scripts/synthesis_place_route.tcl
+	cp vivado.log vivado_$*.log
 
 test_rule:
 	echo test
@@ -52,4 +58,4 @@ test_rule:
 # Program a bitstream
 %.program: %.bit
 	djtgcfg enum
-	djtgcfg prog -d CmodA7 -i 0 -f $*.bit
+	djtgcfg prog -d CmodA7 -i 0 -f bit/$*_${FPGA_PART_NO}.bit
