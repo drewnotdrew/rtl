@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.3.104 (w)1999-2020 BSI
-[*] Sun Jan  5 07:33:24 2025
+[*] Sun Jan  5 21:58:54 2025
 [*]
 [dumpfile] "/home/drew/Documents/git/rtl/sim_build/spi_main/spi_main.fst"
-[dumpfile_mtime] "Sun Jan  5 06:52:28 2025"
-[dumpfile_size] 877
+[dumpfile_mtime] "Sun Jan  5 21:54:50 2025"
+[dumpfile_size] 3862
 [savefile] "/home/drew/Documents/git/rtl/waves/interfaces/spi/spi_main.gtkw"
 [timestart] 0
 [size] 1920 1016
 [pos] -1 -1
-*-17.000000 246400 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-26.000000 189500000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [sst_width] 237
 [signals_width] 226
 [sst_expanded] 1
@@ -28,7 +28,7 @@ spi_main.rst
 @200
 -SPI
 @2028
-^2 /home/drew/Documents/git/rtl/waves/interfaces/spi/spi_main_mode_states.gtkw
+^1 /home/drew/Documents/git/rtl/waves/interfaces/spi/spi_main_mode_states.gtkw
 spi_main.mode
 @28
 spi_main.sclk
@@ -38,44 +38,16 @@ spi_main.mosi
 spi_main.spi_mode[1:0]
 @200
 -Internal Inputs
-@22
-spi_main.rw_addr[6:0]
-spi_main.write_data[8:0]
 @28
 spi_main.write_valid
 spi_main.read_ready
 @200
 -Internal Outputs
-@c00022
-spi_main.read_data[8:0]
-@28
-(0)spi_main.read_data[8:0]
-(1)spi_main.read_data[8:0]
-(2)spi_main.read_data[8:0]
-(3)spi_main.read_data[8:0]
-(4)spi_main.read_data[8:0]
-(5)spi_main.read_data[8:0]
-(6)spi_main.read_data[8:0]
-(7)spi_main.read_data[8:0]
-(8)spi_main.read_data[8:0]
-@1401200
--group_end
-@28
-spi_main.read_valid
-spi_main.write_ready
-@200
 -Internal
-@100c02028
-^1 /home/drew/Documents/git/rtl/waves/interfaces/spi/spi_main_states.gtkw
+@28
+spi_main.bit_counter[2:0]
+@2029
+^2 /home/drew/Documents/git/rtl/waves/interfaces/spi/spi_main_states.gtkw
 spi_main.state[2:0]
-@2028
-^1 /home/drew/Documents/git/rtl/waves/interfaces/spi/spi_main_states.gtkw
-(0)spi_main.state[2:0]
-^1 /home/drew/Documents/git/rtl/waves/interfaces/spi/spi_main_states.gtkw
-(1)spi_main.state[2:0]
-^1 /home/drew/Documents/git/rtl/waves/interfaces/spi/spi_main_states.gtkw
-(2)spi_main.state[2:0]
-@1401200
--group_end
 [pattern_trace] 1
 [pattern_trace] 0
