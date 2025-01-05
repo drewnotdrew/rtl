@@ -2,6 +2,7 @@
 Test for a SPI main.
 """
 
+import random
 import cocotb
 from cocotb.clock import Clock
 from cocotb.triggers import ClockCycles, RisingEdge, FallingEdge
@@ -17,47 +18,49 @@ async def spi_main_random_read(dut):
     """
     Test random reads with a SPI main.
     """
-    # Arrange
-    clock = Clock(signal=dut.clk, period=dut.CLK_PERIOD_NS.value, units="ns")
-    await cocotb.start(clock.start())
+    for _ in range(0, NUM_TESTS):
 
-    # Act
-    dut.en.value = 1
-    dut.rst.value = 1
-    dut.mode.value = 0
-    rw_addr = dut.rw_addr.value = 0b101010
-    read_data = 0b10101010
-    await ClockCycles(signal=dut.clk, num_cycles=2, rising=True)
-    dut.rst.value = 0
+        # Arrange
+        clock = Clock(signal=dut.clk, period=dut.CLK_PERIOD_NS.value, units="ns")
+        await cocotb.start(clock.start())
 
-    # Assert
-    # Begin SPI transceive
-    await FallingEdge(dut.cs)
-    dut.miso.value = 0
+        # Act
+        dut.en.value = 1
+        dut.rst.value = 1
+        dut.mode.value = 0
+        rw_addr = dut.rw_addr.value = random.randint(0, 2**dut.ADDR_WIDTH.value - 1)
+        read_data = random.randint(0, 2**dut.DATA_WIDTH.value - 1)
+        await ClockCycles(signal=dut.clk, num_cycles=2, rising=True)
+        dut.rst.value = 0
 
-    # Ensure SPI main is in read mode
-    await FallingEdge(dut.sclk)
-    assert dut.mosi.value == 0
+        # Assert
+        # Begin SPI transceive
+        await FallingEdge(dut.cs)
+        dut.miso.value = 0
 
-    # Test r/w address output
-    for index in range(0, dut.ADDR_WIDTH.value):
+        # Ensure SPI main is in read mode
         await FallingEdge(dut.sclk)
-        assert dut.mosi.value == (rw_addr >> (dut.ADDR_WIDTH.value - 1 - index)) & 1
+        assert dut.mosi.value == 0
 
-    # Test read data input
-    for index in range(0, dut.DATA_WIDTH.value):
-        await RisingEdge(dut.sclk)
-        dut.miso.value = (read_data >> (dut.DATA_WIDTH.value - 1 - index)) & 1
-    await FallingEdge(dut.sclk)
-    assert dut.read_data.value == read_data
+        # Test r/w address output
+        for index in range(0, dut.ADDR_WIDTH.value):
+            await FallingEdge(dut.sclk)
+            assert dut.mosi.value == (rw_addr >> (dut.ADDR_WIDTH.value - 1 - index)) & 1
 
-    # Cooldown
-    dut.en.value = 0
-    await ClockCycles(
-        signal=dut.clk,
-        num_cycles=dut.COOLDOWN_CYCLES.value,
-        rising=False,  # TODO: Change based on CPOL
-    )
+        # Test read data input
+        for index in range(0, dut.DATA_WIDTH.value):
+            await RisingEdge(dut.sclk)
+            dut.miso.value = (read_data >> (dut.DATA_WIDTH.value - 1 - index)) & 1
+        await FallingEdge(dut.sclk)
+        assert dut.read_data.value == read_data
+
+        # Cooldown
+        dut.en.value = 0
+        await ClockCycles(
+            signal=dut.clk,
+            num_cycles=dut.COOLDOWN_CYCLES.value,
+            rising=False,  # TODO: Change based on CPOL
+        )
 
 
 # @cocotb.test()
