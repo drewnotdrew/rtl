@@ -51,4 +51,4 @@ write_checkpoint -force route.checkpoint
 report_clocks -file clocks.log
 
 # Write bitstream
-write_bitstream -force ./$::env(SYNTH_TOP_MODULE).bit
+write_bitstream -force ./bit/$::env(SYNTH_TOP_MODULE)_$::env(FPGA_PART_NO).bit
