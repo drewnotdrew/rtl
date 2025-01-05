@@ -55,6 +55,7 @@ async def spi_main_random_read(dut):
         assert dut.read_data.value == read_data
 
         # Cooldown
+        await RisingEdge(dut.cs)
         dut.en.value = 0
         await ClockCycles(
             signal=dut.clk,
@@ -63,26 +64,55 @@ async def spi_main_random_read(dut):
         )
 
 
-# @cocotb.test()
-# async def spi_main_random_write(dut):
-#     """
-#     Test random writes with a SPI main.
-#     """
-#     # Arrange
-#     clock = Clock(signal=dut.clk, period=dut.CLK_PERIOD_NS.value, units="ns")
-#     await clock.start(clock.start())
+@cocotb.test()
+async def spi_main_random_write(dut):
+    """
+    Test random writes with a SPI main.
+    """
+    for _ in range(0, NUM_TESTS):
+        # Arrange
+        clock = Clock(signal=dut.clk, period=dut.CLK_PERIOD_NS.value, units="ns")
+        await cocotb.start(clock.start())
 
-#     # Act
-#     dut.en.value = 1
-#     dut.rst.value = 1
-#     dut.mode.value = 1
-#     dut.rw_addr.value = 0x3F
-#     dut.write_data.value = 0xFF
-#     dut.write_valid.value = 1
-#     await ClockCycles(signal=dut.clk, num_cycles=2, rising=True)
-#     dut.rst.value = 0
+        # Act
+        dut.en.value = 1
+        dut.rst.value = 1
+        dut.mode.value = 1
+        rw_addr = dut.rw_addr.value = random.randint(0, 2**dut.ADDR_WIDTH.value - 1)
+        write_data = dut.write_data.value = random.randint(
+            0, 2**dut.DATA_WIDTH.value - 1
+        )
+        dut.write_valid.value = 1
+        await ClockCycles(signal=dut.clk, num_cycles=2, rising=True)
+        dut.rst.value = 0
 
-#     await ClockCycles(signal=dut.clk, num_cycles=10, rising=True)
+        # Assert
+        # Begin SPI transceive
+        await FallingEdge(dut.cs)
+        dut.miso.value = 0
+
+        # Check SPI main is in write mode
+        await FallingEdge(dut.sclk)
+        assert dut.mosi.value == 1
+
+        # Check write address
+        for index in range(0, dut.ADDR_WIDTH.value):
+            await FallingEdge(dut.sclk)
+            assert dut.mosi.value == (rw_addr >> (dut.ADDR_WIDTH.value - 1 - index) & 1)
+
+        # Check write data
+        for index in range(0, dut.DATA_WIDTH.value):
+            await FallingEdge(dut.sclk)
+            assert dut.mosi.value == (
+                write_data >> (dut.DATA_WIDTH.value - 1 - index) & 1
+            )
+
+        # Cooldown
+        await RisingEdge(dut.cs)
+        dut.en.value = 0
+        await ClockCycles(
+            signal=dut.clk, num_cycles=dut.COOLDOWN_CYCLES.value, rising=False
+        )  # TODO: Update for CPOL
 
 
 def test_flip_flop():

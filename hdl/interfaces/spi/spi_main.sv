@@ -79,15 +79,13 @@ module spi_main (
     end else begin
       case (state)
         S_IDLE: begin
-          // Reset outputs
-          read_valid  <= 1;
-
           // Reset bit counter to address width
           bit_counter <= ADDR_WIDTH - 1;
 
           // Only begin SPI transceive if enabled and reading data or enabled,
           // writing data, and write data is valid
           if (en) begin
+            read_valid <= 0;
             if ((~mode) | (mode & write_valid)) begin
               state <= S_START;
             end
@@ -110,20 +108,18 @@ module spi_main (
             else state <= S_DATA_OUT;
           end else bit_counter <= bit_counter - 1;
         end
-        S_DATA_IN: begin
-          // Read data
+        S_DATA_IN, S_DATA_OUT: begin
+          // Read/write data
           if (bit_counter == 0) begin
+            read_valid <= 1;
             cs <= 1;
             state <= S_IDLE;
           end else bit_counter <= bit_counter - 1;
         end
-        S_DATA_OUT: begin
-          ;
-        end
         S_ERROR: begin
           ;
         end
-        default: ;
+        default: state <= S_ERROR;
       endcase
     end
   end
@@ -135,7 +131,7 @@ module spi_main (
       S_RW: mosi = mode;
       S_ADDR: mosi = rw_addr[bit_counter[ADDR_BITS-1:0]];
       S_DATA_IN: read_data[bit_counter[DATA_BITS-1:0]] = miso;
-      // S_DATA_OUT: 
+      S_DATA_OUT: mosi = write_data[bit_counter[DATA_BITS-1:0]];
     endcase
   end
 
