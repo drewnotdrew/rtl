@@ -5,7 +5,7 @@ Runner for cocotb-test for consistent params for all tests.
 from typing import List, Dict
 import cocotb_test.simulator
 
-from util.util import resolve_module_path, get_project_root
+from util.path import resolve_module_path, get_project_root
 
 
 def run_cocotb(top: str, deps: List[str], parameters: Dict[str, str] = None):
