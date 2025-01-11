@@ -17,8 +17,9 @@ typedef enum logic [2:0] {
 
 /* 
 Generic MSB-first SPI main.
-TODO: Expand to msb or lsb first
 TODO: Add support for CPOL and CPHA
+TODO: Compare synthesis of discrete up + down counter vs dynamic indexing.
+      Dynamic indexing is currently implemented.
 */
 
 module spi_main (
@@ -129,9 +130,19 @@ module spi_main (
     case (state)
       S_IDLE, S_START: mosi = 0;
       S_RW: mosi = mode;
-      S_ADDR: mosi = rw_addr[bit_counter[ADDR_BITS-1:0]];
-      S_DATA_IN: read_data[bit_counter[DATA_BITS-1:0]] = miso;
-      S_DATA_OUT: mosi = write_data[bit_counter[DATA_BITS-1:0]];
+      S_ADDR: begin
+        if (msb_first) mosi = rw_addr[bit_counter[ADDR_BITS-1:0]];
+        else mosi = rw_addr[ADDR_WIDTH-1-bit_counter[ADDR_BITS-1:0]];
+      end
+      S_DATA_IN: begin
+        if (msb_first) read_data[bit_counter[DATA_BITS-1:0]] = miso;
+        else read_data[DATA_WIDTH-1-bit_counter[DATA_BITS-1:0]] = miso;
+      end
+      S_DATA_OUT: begin
+        if (msb_first) mosi = write_data[bit_counter[DATA_BITS-1:0]];
+        else mosi = write_data[DATA_WIDTH-1-bit_counter[DATA_BITS-1:0]];
+      end
+      default: ;
     endcase
   end
 
