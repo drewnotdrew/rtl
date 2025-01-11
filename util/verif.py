@@ -1,5 +1,4 @@
 import functools
-import cocotb
 from typing import List
 
 
@@ -42,7 +41,6 @@ def parameterize(parameter_name: str, values: List[int]):
         @functools.wraps(func)
         async def wrapper_parameterize(*args, **kwargs):
             for value in values:
-                print(value)
                 kwargs[parameter_name] = value
                 await func(*args, **kwargs)
 
