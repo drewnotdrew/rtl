@@ -3,7 +3,11 @@
 `default_nettype none
 
 // Macros
-`define max(a, b) (a > b) ? a : b
+`define MAX(a, b) (a > b) ? a : b
+`define CPOL(_spi_mode) _spi_mode[1]
+`define CPHA(_spi_mode) _spi_mode[0]
+`define SAMPLE_ON_RISING(_spi_mode) `CPOL(_spi_mode) ^ `CPHA(_spi_mode)
+`define SHIFT_ON_FALLING(_spi_mode) `CPOL(_spi_mode) ~^ `CPHA(_spi_mode)
 
 typedef enum logic [2:0] {
   S_IDLE = 0,
@@ -52,7 +56,7 @@ module spi_main (
   parameter ADDR_BITS = $clog2(ADDR_WIDTH);
   parameter DATA_WIDTH = 8;
   parameter DATA_BITS = $clog2(DATA_WIDTH);
-  parameter COUNTER_MAX = $clog2(`max(ADDR_WIDTH, DATA_WIDTH));
+  parameter COUNTER_MAX = $clog2(`MAX(ADDR_WIDTH, DATA_WIDTH));
 `ifdef SIMULATION
   parameter COOLDOWN_CYCLES = 5;
 `else
