@@ -29,6 +29,7 @@ module spi_main (
     miso,
     mode,  // Determines read/write
     spi_mode,  // Determines CPOL and CPHA
+    msb_first,
     rw_addr,
     write_data,
     read_ready, // This is an input that determines if that the read data is ready to be transmitted
@@ -42,7 +43,6 @@ module spi_main (
     read_valid,  // This is an output that determines if the read data is valid to be read
     write_ready  // This is an output that determines if the written data is ready to be transmitted
 );
-  // let max(a, b) = (a > b) ? a : b;
 
   // SPI parameters
   parameter CLK_HZ = 12_000_000;
@@ -59,7 +59,7 @@ module spi_main (
 `endif
 
   // Module IO
-  input en, rst, clk, miso, mode, read_ready, write_valid;
+  input en, rst, clk, miso, mode, msb_first, read_ready, write_valid;
   input wire [1:0] spi_mode;
   input wire [ADDR_WIDTH-1:0] rw_addr;
   input wire [DATA_WIDTH-1:0] write_data;

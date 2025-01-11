@@ -13,9 +13,10 @@ from util.verif import repeat, parameterize
 
 
 @cocotb.test()
+@parameterize(parameter_name="msb_first", values=[0, 1])
 @parameterize(parameter_name="spi_mode", values=[value for value in range(0, 4)])
 @repeat(num_repeats=10)
-async def spi_main_random_read(dut, spi_mode: int = None):
+async def spi_main_random_read(dut, spi_mode: int = None, msb_first: int = None):
     """
     Test random reads with a SPI main.
     """
@@ -23,13 +24,13 @@ async def spi_main_random_read(dut, spi_mode: int = None):
     # Arrange
     clock = Clock(signal=dut.clk, period=dut.CLK_PERIOD_NS.value, units="ns")
     await cocotb.start(clock.start())
-    # print(spi_mode)
 
     # Act
     dut.en.value = 1
     dut.rst.value = 1
     dut.mode.value = 0
     dut.spi_mode.value = spi_mode
+    dut.msb_first.value = msb_first
     rw_addr = dut.rw_addr.value = random.randint(0, 2**dut.ADDR_WIDTH.value - 1)
     read_data = random.randint(0, 2**dut.DATA_WIDTH.value - 1)
     await ClockCycles(signal=dut.clk, num_cycles=2, rising=True)

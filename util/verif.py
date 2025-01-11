@@ -46,7 +46,6 @@ def parameterize(parameter_name: str, values: List[int]):
                 kwargs[parameter_name] = value
                 await func(*args, **kwargs)
 
-        wrapper_parameterize = cocotb.test()(wrapper_parameterize)
         return wrapper_parameterize
 
     return decorator_parameterize
