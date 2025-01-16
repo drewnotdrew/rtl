@@ -4,10 +4,6 @@
 
 // Macros
 `define MAX(a, b) (a > b) ? a : b
-`define CPOL(_spi_mode) _spi_mode[1]
-`define CPHA(_spi_mode) _spi_mode[0]
-`define SAMPLE_ON_RISING(_spi_mode) `CPOL(_spi_mode) ^ `CPHA(_spi_mode)
-`define SHIFT_ON_FALLING(_spi_mode) `CPOL(_spi_mode) ~^ `CPHA(_spi_mode)
 
 typedef enum logic [2:0] {
   S_IDLE = 0,
@@ -20,7 +16,8 @@ typedef enum logic [2:0] {
 } spi_state_t;
 
 /* 
-Generic MSB-first SPI main.
+Generic SPI main. Supports dynamic msb or lsb first and parameterized SPI mode
+0(i.e. CPOL and CPHA). 
 TODO: Add support for CPOL and CPHA
 TODO: Compare synthesis of discrete up + down counter vs dynamic indexing.
       Dynamic indexing is currently implemented.
@@ -33,20 +30,19 @@ module spi_main (
     clk,
     miso,
     mode,  // Determines read/write
-    spi_mode,  // Determines CPOL and CPHA
     msb_first,
     rw_addr,
     write_data,
-    read_ready, // This is an input that determines if that the read data is ready to be transmitted
-    write_valid,  // This is an input that determines if that the write data is valid
+    read_ready,
+    write_valid,
 
     // Outputs
     sclk,
     cs,
     mosi,
     read_data,
-    read_valid,  // This is an output that determines if the read data is valid to be read
-    write_ready  // This is an output that determines if the written data is ready to be transmitted
+    read_valid,
+    write_ready
 );
 
   // SPI parameters
@@ -57,6 +53,14 @@ module spi_main (
   parameter DATA_WIDTH = 8;
   parameter DATA_BITS = $clog2(DATA_WIDTH);
   parameter COUNTER_MAX = $clog2(`MAX(ADDR_WIDTH, DATA_WIDTH));
+
+  // SPI mode
+  parameter SPI_MODE = 0;  // Determines CPOL and CPHA
+  parameter _CPOL = (SPI_MODE >> 1) & 1;
+  parameter _CPHA = SPI_MODE & 1;
+  parameter _SAMPLE_ON_RISING = _CPOL ^ _CPHA;
+  parameter _SHIFT_ON_FALLING = _CPOL ~^ _CPHA;
+
 `ifdef SIMULATION
   parameter COOLDOWN_CYCLES = 5;
 `else
@@ -65,7 +69,6 @@ module spi_main (
 
   // Module IO
   input en, rst, clk, miso, mode, msb_first, read_ready, write_valid;
-  input wire [1:0] spi_mode;
   input wire [ADDR_WIDTH-1:0] rw_addr;
   input wire [DATA_WIDTH-1:0] write_data;
 
