@@ -1,6 +1,6 @@
 `timescale 1ns / 100ps
 ;
-`default_nettype none
+`` none
 
 // Macros
 `define MAX(a, b) (a > b) ? a : b
@@ -117,7 +117,7 @@ module spi_main (
           end else bit_counter <= bit_counter - 1;
         end
         S_DATA_IN, S_DATA_OUT: begin
-          // Read/write data
+          // Read/write data 
           if (bit_counter == 0) begin
             read_valid <= 1;
             cs <= 1;
