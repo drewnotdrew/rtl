@@ -1,7 +1,7 @@
 # Determine the path of module.
 
 import argparse
-from util.util import resolve_module_path
+from util.path import resolve_module_path
 
 
 def determine_target_directory(name: str) -> str:

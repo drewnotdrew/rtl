@@ -1,5 +1,6 @@
 # python venv
 rtl_venv/
+.python-version
 
 # pytest
 .pytest_cache/
